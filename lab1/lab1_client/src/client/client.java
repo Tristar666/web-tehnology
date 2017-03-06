@@ -9,7 +9,7 @@ import java.lang.Boolean;
 
 public class client {
     public static void main(String[] args) throws MalformedURLException, IOException {
-        URL url = new URL("http://localhost:8080/TeamsService?wsdl");
+        URL url = new URL("http://localhost:8080/Lab1_JEE2-war/TeamService?wsdl");
         TeamService teamService = new TeamService(url);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Table 'Teams' consist of 5 columns: name, city, stadium, cups and foundation");
