@@ -6,7 +6,7 @@ public class App {
 
    
     public static void main(String[] args) {
-        String url = "http://0.0.0.0:8080/TeamsService";
+        String url = "http://localhost:8080/TeamsService";
         Endpoint.publish(url, new TeamWebService());     
     }
     
