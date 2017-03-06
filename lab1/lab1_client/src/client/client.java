@@ -10,10 +10,10 @@ import java.lang.Boolean;
 public class client {
     public static void main(String[] args) throws MalformedURLException, IOException {
         URL url = new URL("http://localhost:8080/TeamsService?wsdl");
-        TeamService personService = new TeamService(url);
+        TeamService teamService = new TeamService(url);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Table 'Teams' consist of 5 columns: name, city, stadium, cups and foundation");
-        System.out.println("For selecting all rows print select, other way print column name like name=Arsenal to select information about club");
+        System.out.println("For selecting all rows print all or nothing select, other way print column name like name=Arsenal to select information about club");
         while (true){
             System.out.println("For exit write exit");
             String parametr = "";
@@ -39,7 +39,7 @@ public class client {
                     parametr += '\'';
             }
             //System.out.println(parametr);
-            List<Team> teams = personService.getTeamWebServicePort().getTeams(parametr);
+            List<Team> teams = teamService.getTeamWebServicePort().getTeams(parametr);
             for (Team team : teams) {
                 System.out.println("name: " + team.getName() +", city: " + team.getCity() + ", stadium: " + team.getStadium() + ", year of foudation: " + team.getYear() + ", total cups: " +team.getCups());
             }
