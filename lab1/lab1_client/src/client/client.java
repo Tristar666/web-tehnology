@@ -13,7 +13,9 @@ public class client {
         TeamService teamService = new TeamService(url);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Table 'Teams' consist of 5 columns: name, city, stadium, cups and foundation");
-        System.out.println("For selecting all rows print all or nothing select, other way print column name like name=Arsenal to select information about club");
+        System.out.println("For selection all rows print all or nothing select, other way print column name like name=Arsenal to select information about club");
+        System.out.println("For multiply selection write column name and <,> or = and value, after thar write 'and' and another columnt name and expression");
+        System.out.println("Example, 'city=London and cups>3 and foundation>1900'");
         while (true){
             System.out.println("For exit write exit");
             String parametr = "";
