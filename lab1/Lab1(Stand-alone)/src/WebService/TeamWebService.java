@@ -10,7 +10,7 @@ import javax.jws.WebService;
 @WebService(serviceName = "TeamService")
 public class TeamWebService {
     @WebMethod(operationName = "getTeams")
-        public List<Team> getTeams(String parametrs) {
+    public List<Team> getTeams(String parametrs) {
         PostgreSQLDAO dao = new PostgreSQLDAO();
         List<Team> teams = dao.getTeams(parametrs);
         return teams;
