@@ -2,13 +2,16 @@
 package webservice;
 
 import java.util.List;
+import java.util.concurrent.Future;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.ws.Action;
+import javax.xml.ws.AsyncHandler;
 import javax.xml.ws.RequestWrapper;
+import javax.xml.ws.Response;
 import javax.xml.ws.ResponseWrapper;
 
 
@@ -24,6 +27,35 @@ import javax.xml.ws.ResponseWrapper;
 })
 public interface TeamWebService {
 
+
+    /**
+     * 
+     * @param arg0
+     * @return
+     *     returns javax.xml.ws.Response<webservice.GetAllTeamsResponse>
+     */
+    @WebMethod(operationName = "getAllTeams")
+    @RequestWrapper(localName = "getAllTeams", targetNamespace = "http://WebService/", className = "webservice.GetAllTeams")
+    @ResponseWrapper(localName = "getAllTeamsResponse", targetNamespace = "http://WebService/", className = "webservice.GetAllTeamsResponse")
+    public Response<GetAllTeamsResponse> getAllTeamsAsync(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0);
+
+    /**
+     * 
+     * @param arg0
+     * @param asyncHandler
+     * @return
+     *     returns java.util.concurrent.Future<? extends java.lang.Object>
+     */
+    @WebMethod(operationName = "getAllTeams")
+    @RequestWrapper(localName = "getAllTeams", targetNamespace = "http://WebService/", className = "webservice.GetAllTeams")
+    @ResponseWrapper(localName = "getAllTeamsResponse", targetNamespace = "http://WebService/", className = "webservice.GetAllTeamsResponse")
+    public Future<?> getAllTeamsAsync(
+        @WebParam(name = "arg0", targetNamespace = "")
+        String arg0,
+        @WebParam(name = "asyncHandler", targetNamespace = "")
+        AsyncHandler<GetAllTeamsResponse> asyncHandler);
 
     /**
      * 
