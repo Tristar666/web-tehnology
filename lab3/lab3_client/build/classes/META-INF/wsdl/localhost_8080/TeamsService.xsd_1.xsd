@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is JAX-WS RI 2.2.9-b130926.1035 svn-revision#5f6196f2b90e9460065a4c2f4e30e065b245e51e. --><xs:schema xmlns:tns="http://WebService/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://WebService/">
+
+<xs:element name="DataError" nillable="true" type="tns:teamServiceFault"></xs:element>
+
+<xs:element name="deleteTeam" type="tns:deleteTeam"></xs:element>
+
+<xs:element name="deleteTeamResponse" type="tns:deleteTeamResponse"></xs:element>
+
+<xs:element name="getTeams" type="tns:getTeams"></xs:element>
+
+<xs:element name="getTeamsResponse" type="tns:getTeamsResponse"></xs:element>
+
+<xs:element name="insertTeam" type="tns:insertTeam"></xs:element>
+
+<xs:element name="insertTeamResponse" type="tns:insertTeamResponse"></xs:element>
+
+<xs:element name="updateTeam" type="tns:updateTeam"></xs:element>
+
+<xs:element name="updateTeamResponse" type="tns:updateTeamResponse"></xs:element>
+
+<xs:complexType name="deleteTeam">
+<xs:sequence>
+<xs:element name="arg0" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="deleteTeamResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="teamServiceFault">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="insertTeam">
+<xs:sequence>
+<xs:element name="arg0" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="insertTeamResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getTeams">
+<xs:sequence>
+<xs:element name="arg0" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getTeamsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:team" minOccurs="0" maxOccurs="unbounded"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="team">
+<xs:sequence>
+<xs:element name="city" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="cups" type="xs:int"></xs:element>
+<xs:element name="id" type="xs:int"></xs:element>
+<xs:element name="name" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="stadium" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="year" type="xs:int"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="updateTeam">
+<xs:sequence>
+<xs:element name="arg0" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="arg1" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="updateTeamResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
