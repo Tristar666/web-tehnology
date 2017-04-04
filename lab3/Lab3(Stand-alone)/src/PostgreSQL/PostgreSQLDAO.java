@@ -40,7 +40,7 @@ public class PostgreSQLDAO {
             switch(check){    
                 case 0: //check column name
                     switch(str.charAt(i)){
-                        case '=': check = 1; System.out.println(tempColumn); if (!check_field(tempColumn)) return false; break;
+                        case '=': check = 1; if (!check_field(tempColumn)) return false; break;
                         case '>': check = 1; if (!check_field(tempColumn)) return false; break;
                         case '<': check = 1; if (!check_field(tempColumn)) return false; break;
                         default: tempColumn += str.charAt(i);
