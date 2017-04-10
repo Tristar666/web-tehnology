@@ -29,8 +29,8 @@ public class TeamResource {
         jsonString = jsonString.replaceAll("\\+", " "); //encoding problem
         PostgreSQLDAO dao = new PostgreSQLDAO();
         jsonString = dao.parseSelect(jsonString);
-        List<Team> persons = dao.getTeams(jsonString);
-        return persons;
+        List<Team> teams = dao.getTeams(jsonString);
+        return teams;
     }
     
     @PUT
