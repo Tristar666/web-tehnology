@@ -1,0 +1,6 @@
+Teams\Team.class
+TeamResource\TeamResource.class
+PostgreSQL\PostgreSQLDAO.class
+TeamResource\DataError.class
+TeamResource\DataErrorMapper.class
+TeamResource\TeamResource$1.class
