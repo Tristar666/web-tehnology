@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
@@ -18,17 +19,22 @@ import javax.enterprise.context.RequestScoped;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.*;
 
 @RequestScoped
 @Path("/teams")
-@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+//@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class TeamResource {
 
     /*
@@ -55,20 +61,6 @@ public class TeamResource {
         return login.equals("lol") && pass.equals("lol");
     }
     
-    @GET
-    public Response getTeams(@QueryParam("name") String jsonString,@HeaderParam("Login") String login, @HeaderParam("Pass") String pass) throws DataError, JSONException, NamingException {
-        if (!auth(login,pass))
-            throw new DataError("Wrong password or login!!!");
-        List<Team> teams = null;
-        jsonString = jsonString.replaceAll("\\+", " "); //encoding problem
-        PostgreSQLDAO dao = new PostgreSQLDAO();
-        if (!dao.checkSelect(jsonString))
-            throw new DataError("Wrond data type or filed!!!");
-        jsonString = dao.parseSelect(jsonString);            
-        teams = dao.getTeams(jsonString,getConnection());        
-        GenericEntity<List<Team>> entity = new GenericEntity<List<Team>>(teams) {};
-        return Response.ok(entity).build();
-    }
     
     @PUT
     public String insertTeam(@QueryParam("name") String jsonString, @HeaderParam("Login") String login, @HeaderParam("Pass") String pass) throws DataError, JSONException, NamingException{
@@ -109,6 +101,44 @@ public class TeamResource {
         if (Integer.parseInt(res) <= 0)
             throw new DataError("Update problem...");
         return res;
+    }
+    
+    private ExecutorService executorService = java.util.concurrent.Executors.newCachedThreadPool();
+
+    @GET
+    public void getTeams(@Suspended final AsyncResponse asyncResponse, @QueryParam(value = "name") final String jsonString) {        
+        System.out.println(jsonString);
+        executorService.submit(new Runnable() {               
+            @Override
+            public void run() {
+                try {
+                    asyncResponse.resume(doGetTeams(jsonString));
+                    /*System.out.println(jsonString);
+                    asyncResponse.resume(Response.ok(jsonString).build());*/
+                } catch (DataError ex) {
+                    Logger.getLogger(TeamResource.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (JSONException ex) {
+                    Logger.getLogger(TeamResource.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (NamingException ex) {
+                    Logger.getLogger(TeamResource.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });        
+    }
+
+    private Response doGetTeams(String jsonString) throws DataError, JSONException, NamingException {
+        /*if (!auth(login,pass))
+            throw new DataError("Wrong password or login!!!");*/
+        List<Team> teams = null;
+        jsonString = jsonString.replaceAll("\\+", " "); //encoding problem
+        PostgreSQLDAO dao = new PostgreSQLDAO();
+        if (!dao.checkSelect(jsonString))
+            throw new DataError("Wrond data type or filed!!!");
+        jsonString = dao.parseSelect(jsonString);
+        teams = dao.getTeams(jsonString,getConnection());
+        GenericEntity<List<Team>> entity = new GenericEntity<List<Team>>(teams) {};
+        return Response.ok(entity).build();
+        //return teams;
     }
 
 }

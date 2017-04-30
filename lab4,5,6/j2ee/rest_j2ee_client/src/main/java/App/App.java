@@ -8,16 +8,28 @@ package App;
 import Teams.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.sun.jersey.api.client.AsyncWebResource;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.ClientResponse.Status;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.async.TypeListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ws.rs.client.AsyncInvoker;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.JSONObject;
 
 public class App {
@@ -50,8 +62,30 @@ public class App {
             }
             String jsonString = json.toString();
             Client client = Client.create();
-            WebResource webResource = client.resource(URL);
+            AsyncWebResource webResource = client.asyncResource(URL);
             webResource = webResource.queryParam("name",URLEncoder.encode(jsonString, "UTF-8"));
+            Future<Response> stringFuture = webResource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).get(Response.class);
+            Response res = stringFuture.get();            
+            System.out.println(res.getStatus());
+            /*webResource.get(new TypeListener<Response>(Response.class) {
+                    @Override
+                    public void onComplete(Future<Response> f) throws InterruptedException {
+                        try {
+                           Response response = f.get();
+                           if (response == null || response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
+                               System.err.println(" LOl " + response.getStatus()+" "+response.getStatus());
+                           } else{
+                               System.out.println(" Async " + response.getStatus());
+                           }
+                       } catch (ExecutionException e) {
+                           // TODO Auto-generated catch block
+                           e.printStackTrace();
+                       }
+                    }
+                });   */
+            /*Client client = Client.create();
+            WebResource webResource = client.resource(URL);
+            webResource = webResource.queryParam("name",URLEncoder.encode(jsonString, "UTF-8"));           
             ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON + ";charset=utf-8").header("Login","lol").header("Pass","lol").get(ClientResponse.class);            
             if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
                 throw new IllegalStateException(response.getEntity(String.class));
@@ -61,7 +95,7 @@ public class App {
             for (Team team : teams) {
                 System.out.println("name: " + team.getName() +", city: " + team.getCity() + ", stadium: " + team.getStadium() + ", year of foudation: " + team.getYear() + ", total cups: " +team.getCups());
             }
-            System.out.println("Total teams: " + teams.size());           
+            System.out.println("Total teams: " + teams.size());*/
         } catch (Exception e){
             System.out.println(e.getMessage());
         }

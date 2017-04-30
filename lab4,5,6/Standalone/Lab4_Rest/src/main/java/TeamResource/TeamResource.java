@@ -21,7 +21,7 @@ public class TeamResource {
     private boolean auth(String login, String pass){
         return login.equals("lol") && pass.equals("lol");
     }
-    
+        
     @GET
     public List<Team> getTeams(@QueryParam("name") String jsonString,@HeaderParam("Login") String login, @HeaderParam("Pass") String pass) throws DataError, JSONException {
         if (!auth(login,pass))
