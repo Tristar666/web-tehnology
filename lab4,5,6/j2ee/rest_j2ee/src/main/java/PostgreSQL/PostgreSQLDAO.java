@@ -11,16 +11,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class PostgreSQLDAO {
-    
-    /*private Connection conn;
-    
-    public PostgreSQLDAO(Connection connection){
-        conn = connection;
-    }*/
     
     private boolean check_field(String str){
         switch(str){
@@ -82,12 +77,18 @@ public class PostgreSQLDAO {
         Iterator<?> keys = jsonObj.keys();
         while(keys.hasNext() ) {
             String keyStr = (String)keys.next();
-            if (!check_field(keyStr))
-                throw new DataError("Wrong field!!!");
+            if (!check_field(keyStr)){
+                DataError de = new DataError(Response.Status.BAD_REQUEST);
+                de.setMessage("Wrong field!!!");
+                throw de;
+            }           
             Object keyvalue = jsonObj.get(keyStr);
             if (keyStr.equals("cups") || keyStr.equals("foundation")){
-                if (!validateInt((String) keyvalue))
-                    throw new DataError("Wrong data type!!!");
+                if (!validateInt((String) keyvalue)){
+                    DataError de = new DataError(Response.Status.BAD_REQUEST);
+                    de.setMessage("Wrong data type!!!");
+                    throw de;
+                }           
             }
             temp += "'"+keyvalue+"'"+",";
         }
@@ -100,16 +101,25 @@ public class PostgreSQLDAO {
         Iterator<?> keys = jsonObj.keys();
         while(keys.hasNext() ) {
             String keyStr = (String)keys.next();
-            if (!check_field(keyStr))
-                throw new DataError("Wrong field!!!");
+            if (!check_field(keyStr)){
+                DataError de = new DataError(Response.Status.BAD_REQUEST);
+                de.setMessage("Wrong field!!!");
+                throw de;
+            }           
             Object keyvalue = jsonObj.get(keyStr);
             if (keyStr.equals("cups") || keyStr.equals("foundation")){
-                if (!validateInt((String) keyvalue))
-                    throw new DataError("Wrong data type!!!");
+                if (!validateInt((String) keyvalue)){
+                    DataError de = new DataError(Response.Status.BAD_REQUEST);
+                    de.setMessage("Wrong data type!!!");
+                    throw de;
+                }           
             }
             if (keyStr.equals("id")){
-                if (!validateInt((String) keyvalue))
-                    throw new DataError("Wrong data type!!!");
+                if (!validateInt((String) keyvalue)){
+                    DataError de = new DataError(Response.Status.BAD_REQUEST);
+                    de.setMessage("Wrong data type!!!");
+                    throw de;
+                }           
                 temp = temp.substring(0,temp.length()-1);
                 temp += "where "+keyStr+"='"+keyvalue+"'";
             } else temp += keyStr+"='"+keyvalue+"'"+",";

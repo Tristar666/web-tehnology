@@ -5,13 +5,22 @@ import webservice.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.lang.Boolean;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.handler.MessageContext;
 
 public class client {
     
-    private static void showTeam() throws MalformedURLException, IOException{
-        URL url = new URL("http://localhost:8080/TeamsService?wsdl");
-        TeamService teamService = new TeamService(url);
+    private static void header(TeamWebService port){       
+        Map<String, Object> req_ctx = ((BindingProvider)port).getRequestContext();
+        req_ctx.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, "http://localhost:8080/TeamsService?wsdl");
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("Username", Collections.singletonList("lol"));
+        headers.put("Password", Collections.singletonList("lol"));
+        req_ctx.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
+    }   
+    
+    private static void showTeam(TeamWebService port) throws MalformedURLException, IOException{
+        header(port);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Table 'Teams' consist of 5 columns: name, city, stadium, cups and foundation");
         System.out.println("For selection all rows print all or nothing select, other way print column name like name=Arsenal to select information about club");
@@ -37,7 +46,7 @@ public class client {
         if (check == 1){
             parametr += '\'';
         }
-        List<Team> teams = teamService.getTeamWebServicePort().getTeams(parametr);
+        List<Team> teams = port.getTeams(parametr);
         for (Team team : teams) {
             System.out.println("name: " + team.getName() +", city: " + team.getCity() + ", stadium: " + team.getStadium() + ", year of foudation: " + team.getYear() + ", total cups: " +team.getCups());
         }
@@ -55,10 +64,9 @@ public class client {
         }
     }
     
-    private static void insertTeam() throws MalformedURLException, IOException{
-        String param[] = {"name","city","stadium","cups","foundation"};
-        URL url = new URL("http://localhost:8080/TeamsService?wsdl");
-        TeamService teamService = new TeamService(url);
+    private static void insertTeam(TeamWebService port) throws MalformedURLException, IOException{
+        header(port);
+        String param[] = {"name","city","stadium","cups","foundation"};       
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String parametrs = "insert into teams (name,city,stadium,cups,foundation) values(";
         for (int i=0;i<=4;++i){
@@ -74,15 +82,14 @@ public class client {
             else parametrs +="'"+temp+"')";
         }
         System.out.println(parametrs);
-        int check = teamService.getTeamWebServicePort().insertTeam(parametrs);
+        int check = port.insertTeam(parametrs);
         if (check <= 0)
             System.out.println("There is no row with this id or something happens....");
         else System.out.println("Id of inserted row is " + check);
     }
     
-    private static void updateTeam() throws MalformedURLException, IOException{
-        URL url = new URL("http://localhost:8080/TeamsService?wsdl");
-        TeamService teamService = new TeamService(url);
+    private static void updateTeam(TeamWebService port) throws MalformedURLException, IOException{
+        header(port);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String parametrs = "update teams set ";
         System.out.println("Table 'Teams' consist of 5 columns: name, city, stadium, cups and foundation");
@@ -106,7 +113,7 @@ public class client {
         while (true){
             System.out.println("Write id, please");
             String temp = br.readLine();
-            int check = teamService.getTeamWebServicePort().updateTeam(parametrs+temp);
+            int check = port.updateTeam(parametrs+temp);
             if (check == 0){
                 System.out.println("There is no row with this id or something happens....");
                 System.out.println("do you want continue?");
@@ -122,15 +129,14 @@ public class client {
         }
     }
     
-    private static void deleteTeam() throws MalformedURLException, IOException{
-        URL url = new URL("http://localhost:8080/TeamsService?wsdl");
-        TeamService teamService = new TeamService(url);
+    private static void deleteTeam(TeamWebService port) throws MalformedURLException, IOException{
+        header(port);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (true){
             System.out.println("Write id to delete row");
             String temp = br.readLine();
             String parametrs = "delete from teams where id=";
-            int check = teamService.getTeamWebServicePort().deleteTeam(parametrs+temp);
+            int check = port.deleteTeam(parametrs+temp);
             if (check == 0){
                 System.out.println("There is no row with this id or something happens....");
                 System.out.println("do you want continue?");
@@ -147,6 +153,9 @@ public class client {
     }
     
     public static void main(String[] args) throws MalformedURLException, IOException {
+        URL url = new URL("http://localhost:8080/TeamsService?wsdl");
+        TeamService teamService = new TeamService(url);
+        TeamWebService port = teamService.getTeamWebServicePort();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String temp="";
         while (true){
@@ -158,10 +167,10 @@ public class client {
             System.out.println("exit - exit from application");
             temp = br.readLine();
             switch(temp){
-                case "insert": insertTeam(); break;
-                case "update": updateTeam(); break;
-                case "delete": deleteTeam(); break;
-                case "show": showTeam(); break;
+                case "insert": insertTeam(port); break;
+                case "update": updateTeam(port); break;
+                case "delete": deleteTeam(port); break;
+                case "show": showTeam(port); break;
                 case "exit": System.exit(0);
                 default:
                     System.out.println("There is no such command.... Retry, please.");

@@ -1,6 +1,9 @@
 package TeamResource;
 
-public class DataError extends Exception {
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.WebApplicationException;
+
+public class DataError extends WebApplicationException  {
 
     private static final long serialVersionUID = 6647544772732631047L;
     
@@ -11,18 +14,20 @@ public class DataError extends Exception {
         return this.message;
     }
     
+    public void setMessage(String message){
+        this.message = message;
+    }
+    
     public DataError(){
-        super("Omg something happened...");
+        super();
     }
     
-    public DataError(String message) {
-        super(message);
-        this.message = message;
+    public DataError(Status st) {
+        super(st);       
     }
     
-    public DataError(String message, Throwable th){
-        super(message,th);
-        this.message = message;
+    public DataError(Status st, Throwable th){
+        super(th,st);        
     }
     
 }

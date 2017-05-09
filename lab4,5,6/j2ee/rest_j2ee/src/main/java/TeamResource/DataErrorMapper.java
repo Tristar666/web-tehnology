@@ -15,6 +15,7 @@ import javax.ws.rs.ext.Provider;
 public class DataErrorMapper implements ExceptionMapper<DataError> {
  
     @Override
-    public Response toResponse(DataError e) {
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();    }
+    public Response toResponse(DataError e){
+        return Response.status(e.getResponse().getStatus()).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();    
+    }
 }
